@@ -9,23 +9,37 @@ import (
 
 const expectedLength = 2
 
+var stringsToBeSkipped = []string{
+	// People I already follow
+	"@kas",
+	"@freemor",
+	"@nblade",
+	"@iolfree",
+	"@mdosch",
+	"Barkrowler",
+	// Bots
+	"MastoPeek",
+	"PetalBot",
+	"YandexBot",
+	"bingbot",
+	"SeznamBot",
+	"SemrushBot",
+	"http://www.apple.com/go/applebot",
+	"Googlebot",
+}
+
+func readUserAgent(jsonPartOfLine string) string{
+		var result map[string]interface{}
+
+		_ = json.Unmarshal([]byte(jsonPartOfLine), &result)
+
+		request := result["request"].(map[string]interface{})
+		headers := request["headers"].(map[string]interface{})
+		return fmt.Sprintf("%v", headers["User-Agent"])
+}
+
 func main() {
-	stringsToBeSkipped := []string{
-		"@kas",
-		"@freemor",
-		"@nblade",
-		"@iolfree",
-		"@mdosch",
-		"Barkrowler",
-		"MastoPeek",
-		"PetalBot",
-		"YandexBot",
-		"bingbot",
-		"SeznamBot",
-		"SemrushBot",
-		"http://www.apple.com/go/applebot",
-		"Googlebot",
-	}
+
 
 	data, err := ioutil.ReadFile("/var/log/hjertnes.social.log")
 
@@ -40,15 +54,8 @@ func main() {
 			continue
 		}
 
-		jsonPartOfLine := parts[1]
+		userAgent := readUserAgent(parts[1])
 
-		var result map[string]interface{}
-
-		_ = json.Unmarshal([]byte(jsonPartOfLine), &result)
-
-		request := result["request"].(map[string]interface{})
-		headers := request["headers"].(map[string]interface{})
-		userAgent := fmt.Sprintf("%v", headers["User-Agent"])
 		cont := false
 
 		for _, skip := range stringsToBeSkipped {
