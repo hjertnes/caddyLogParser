@@ -18,6 +18,11 @@ var stringsToBeSkipped = []string{
 	"@mdosch",
 	"Barkrowler",
 	// Bots
+	"http://webmeup-crawler.com/",
+	"http://ahrefs.com/robot/",
+	"AhrefsBot",
+	"Mastodon",
+	"BLEXBot",
 	"MastoPeek",
 	"PetalBot",
 	"YandexBot",
