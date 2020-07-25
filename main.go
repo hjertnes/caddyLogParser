@@ -10,18 +10,13 @@ import (
 const expectedLength = 2
 
 var stringsToBeSkipped = []string{
-	// People I already follow
-	"@kas",
-	"@freemor",
-	"@nblade",
-	"@iolfree",
-	"@mdosch",
-	"Barkrowler",
 	// Bots
+	"Barkrowler",
 	"http://webmeup-crawler.com/",
 	"http://ahrefs.com/robot/",
 	"AhrefsBot",
 	"Mastodon",
+	"MJ12bot",
 	"BLEXBot",
 	"MastoPeek",
 	"PetalBot",
@@ -31,6 +26,10 @@ var stringsToBeSkipped = []string{
 	"SemrushBot",
 	"http://www.apple.com/go/applebot",
 	"Googlebot",
+	"fediverse.network crawler",
+	"Mail.RU_Bot",
+	"Let's Encrypt validation server",
+	"DotBot",
 }
 
 func readUserAgent(jsonPartOfLine string) string{
@@ -53,6 +52,8 @@ func main() {
 		return
 	}
 
+	printed := make([]string, 0)
+
 	for _, line := range strings.Split(string(data), "\n") {
 		parts := strings.Split(line, "handled request")
 		if len(parts) < expectedLength {
@@ -70,12 +71,20 @@ func main() {
 			}
 		}
 
+		for _, skip := range printed {
+			if skip == userAgent{
+				cont = true
+				break
+			}
+		}
+
 		if cont {
 			continue
 		}
 
 		if strings.Contains(userAgent, "http://") || strings.Contains(userAgent, "https://") {
 			fmt.Println(userAgent)
+			printed = append(printed, userAgent)
 		}
 	}
 }
