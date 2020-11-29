@@ -1,3 +1,3 @@
-module git.sr.ht/~hjertnes/caddyLogParser
+module github.com/hjertnes/caddyLogParser
 
 go 1.14
